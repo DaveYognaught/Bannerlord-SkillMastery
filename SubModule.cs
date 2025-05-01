@@ -2,10 +2,7 @@
 using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
-using TaleWorlds.CampaignSystem;
-using TaleWorlds.CampaignSystem.GameComponents;
-using TaleWorlds.CampaignSystem.ViewModelCollection.GameMenu;
-using System;
+using System.Linq;
 
 namespace SkillMastery
 {
@@ -16,14 +13,19 @@ namespace SkillMastery
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
+            InformationManager.DisplayMessage(new InformationMessage("SkillMastery: OnSubModuleLoad called"));
 
-            // Log to console/logs for debugging
-            Console.WriteLine("SkillMastery: OnSubModuleLoad called");
-
-            // Patch with Harmony
             _harmony = new Harmony("com.skillmastery.perkunlocker");
             _harmony.PatchAll();
+
+            foreach (var m in Harmony.GetAllPatchedMethods())
+            {
+                var owner = Harmony.GetPatchInfo(m)?.Owners?.FirstOrDefault();
+                if (owner == "com.skillmastery.perkunlocker")
+                    InformationManager.DisplayMessage(new InformationMessage($"SkillMastery patched: {m.DeclaringType.FullName}.{m.Name}"));
+            }
         }
+
 
         protected override void OnSubModuleUnloaded()
         {
