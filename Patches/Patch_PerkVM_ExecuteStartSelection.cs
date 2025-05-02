@@ -36,8 +36,6 @@ namespace SkillMastery.Patches
             int required = cap + (idx * Settings.SkillMasteryLevelOffset);
             if (hero.GetSkillValue(perk.Skill) < required) return true;
 
-            InformationManager.DisplayMessage(new InformationMessage($"Trying to grant skill...."));
-
             // 3) Grant it directly
             var dev = hero.HeroDeveloper;
             AccessTools.Method(typeof(HeroDeveloper), "AddPerk")

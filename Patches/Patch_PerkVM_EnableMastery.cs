@@ -27,7 +27,6 @@ namespace SkillMastery.Patches
 
             if (playerSkill < required)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[Postfix] {perk.Name} NOT available: {playerSkill}/{required}"));
                 return;
             }
 
@@ -40,8 +39,6 @@ namespace SkillMastery.Patches
              || current == PerkVM.PerkStates.NotEarned
              || current == PerkVM.PerkStates.EarnedPreviousPerkNotSelected)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[Postfix] Overriding Perk {perk.Name} to EarnedButNotSelected (Skill: {playerSkill}, Required: {required})"));
-
                 sf.SetValue(__instance, PerkVM.PerkStates.EarnedButNotSelected);
                 pf.SetValue(__instance, (int)PerkVM.PerkStates.EarnedButNotSelected);
             }
