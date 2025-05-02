@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Linq;
+using TaleWorlds.Core;
 using TaleWorlds.Library;
 using TaleWorlds.MountAndBlade;
 
@@ -30,6 +31,22 @@ namespace SkillMastery
         {
             base.OnSubModuleUnloaded();
             _harmony?.UnpatchAll("com.skillmastery.perkunlocker");
+        }
+
+        protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
+        {
+            base.OnGameStart(game, gameStarterObject);
+
+            // Only show this once per game session
+            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded."));
+        }
+
+        protected override void OnBeforeInitialModuleScreenSetAsRoot()
+        {
+            base.OnBeforeInitialModuleScreenSetAsRoot();
+
+            // Triggers once at game startup, when the main menu appears
+            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded."));
         }
     }
 }
