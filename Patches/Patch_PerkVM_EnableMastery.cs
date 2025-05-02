@@ -22,7 +22,22 @@ namespace SkillMastery.Patches
             int cap = perk.Skill == DefaultSkills.Trade ? 300
                          : perk.Skill == DefaultSkills.TwoHanded ? 250
                          : 275;
-            int required = cap + (idx * Settings.SkillMasteryLevelOffset);
+            int required = 0;
+            if (cap == 300)
+            {
+                if (SkillMasterySettings.Instance.MasteryLevelOffset > 2)
+                {
+                    required = cap + (idx * 2);
+                }
+                else
+                {
+                    required = cap + (idx * SkillMasterySettings.Instance.MasteryLevelOffset);
+                }
+            }
+            else
+            {
+                required = cap + (idx * SkillMasterySettings.Instance.MasteryLevelOffset);
+            }
             int playerSkill = hero.GetSkillValue(perk.Skill);
 
             if (playerSkill < required)

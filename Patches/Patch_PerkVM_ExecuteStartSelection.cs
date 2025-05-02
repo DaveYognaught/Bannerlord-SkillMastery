@@ -33,7 +33,22 @@ namespace SkillMastery.Patches
             int cap = perk.Skill == DefaultSkills.Trade ? 300
                          : perk.Skill == DefaultSkills.TwoHanded ? 250
                          : 275;
-            int required = cap + (idx * Settings.SkillMasteryLevelOffset);
+            int required = 0;
+            if (cap == 300)
+            {
+                if(SkillMasterySettings.Instance.MasteryLevelOffset > 2)
+                {
+                    required = cap + (idx * 2);
+                }
+                else
+                {
+                    required = cap + (idx * SkillMasterySettings.Instance.MasteryLevelOffset);
+                }
+            } 
+            else
+            {
+                required = cap + (idx * SkillMasterySettings.Instance.MasteryLevelOffset);
+            }
             if (hero.GetSkillValue(perk.Skill) < required) return true;
 
             // 3) Grant it directly
@@ -42,15 +57,18 @@ namespace SkillMastery.Patches
                        .Invoke(dev, new object[] { perk });
 
             // 4) Feedback (optional)
-            var maxTier = PerkObject.All
-              .Where(p => p.Skill == perk.Skill && p.AlternativePerk != null)
-              .Max(p => p.RequiredSkillValue);
-            bool isFinal = Math.Abs(perk.RequiredSkillValue - maxTier) < 0.001f;
-            if (isFinal)
-                InformationManager.DisplayMessage(new InformationMessage($"You are a master of {perk.Skill.Name}!"));
-            else
+            if(SkillMasterySettings.Instance.ShowMessages)
             {
-                InformationManager.DisplayMessage(new InformationMessage($"Your skill mastery grows..."));
+                var maxTier = PerkObject.All
+                  .Where(p => p.Skill == perk.Skill && p.AlternativePerk != null)
+                  .Max(p => p.RequiredSkillValue);
+                bool isFinal = Math.Abs(perk.RequiredSkillValue - maxTier) < 0.001f;
+                if (isFinal)
+                    InformationManager.DisplayMessage(new InformationMessage($"You are a master of {perk.Skill.Name}!"));
+                else
+                {
+                    InformationManager.DisplayMessage(new InformationMessage($"Your skill mastery grows..."));
+                }
             }
 
             // 5) Block further clicks
