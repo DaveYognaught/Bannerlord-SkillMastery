@@ -15,17 +15,11 @@ namespace SkillMastery.Patches
             var perk = __instance.Perk;
             var hero = Hero.MainHero;
             if (hero == null || perk == null || perk.AlternativePerk == null)
-            {
-                InformationManager.DisplayMessage(new InformationMessage("Hero or Perk or AlternativePerk is null!"));
                 return;
-            }
 
             // Only if the player has learned the sibling perk...
             if (!hero.GetPerkValue(perk.AlternativePerk))
-            {
-                InformationManager.DisplayMessage(new InformationMessage($"Player has not learned alternative perk {perk.AlternativePerk.Name}!"));
                 return;
-            }
 
             // Compute mastery threshold
             int idx = (int)(perk.RequiredSkillValue / 25f);
@@ -34,20 +28,46 @@ namespace SkillMastery.Patches
                          : 275;
             int required = cap + (idx * Settings.SkillMasteryLevelOffset);
 
-            // Log what the threshold is
-            InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] Perk: {perk.Name}, Skill: {perk.Skill.Name}, Required: {required}, Player Skill: {hero.GetSkillValue(perk.Skill)}"));
+            // Check if the player's skill is greater than or equal to the required level
+            int playerSkill = hero.GetSkillValue(perk.Skill);
 
-            // If player meets or exceeds it, flip _isAvailable on
-            if (hero.GetSkillValue(perk.Skill) >= required)
+            // Log only when availability is changed
+            bool isAvailableNow = playerSkill >= required;
+
+            // Log when the perk's availability changes (either becomes available or unavailable)
+            if (isAvailableNow && !GetIsAvailable(__instance))
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] Player meets the threshold! Making Perk clickable for {perk.Name}."));
-                AccessTools.Field(typeof(PerkVM), "_isAvailable")
-                           .SetValue(__instance, true);
+                InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] Perk {perk.Name} became available (Player Skill: {playerSkill}, Required: {required})"));
+                SetIsAvailable(__instance, true);
             }
-            else
+            else if (!isAvailableNow && GetIsAvailable(__instance))
             {
-                InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] Player does not meet the threshold for {perk.Name}."));
+                InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] Perk {perk.Name} is no longer available (Player Skill: {playerSkill}, Required: {required})"));
+                SetIsAvailable(__instance, false);
             }
+
+            // Log when player skill exceeds max, but the perk is not available
+            if (playerSkill > cap && !isAvailableNow)
+            {
+                InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] Player skill for {perk.Name} is above max (Player Skill: {playerSkill}, Cap: {cap}), but perk is not available."));
+            }
+
+            // If the player skill exceeds cap but the perk doesn't become visible, log the failure
+            if (playerSkill > cap && !isAvailableNow)
+            {
+                InformationManager.DisplayMessage(new InformationMessage($"[RefreshState] {perk.Name} was expected to be visible, but requirements aren't met yet (Player Skill: {playerSkill}, Cap: {cap})"));
+            }
+        }
+
+        // Helper methods to interact with the internal _isAvailable field (since it's not directly exposed)
+        private static bool GetIsAvailable(PerkVM perkVM)
+        {
+            return (bool)AccessTools.Field(typeof(PerkVM), "_isAvailable").GetValue(perkVM);
+        }
+
+        private static void SetIsAvailable(PerkVM perkVM, bool value)
+        {
+            AccessTools.Field(typeof(PerkVM), "_isAvailable").SetValue(perkVM, value);
         }
     }
 }
