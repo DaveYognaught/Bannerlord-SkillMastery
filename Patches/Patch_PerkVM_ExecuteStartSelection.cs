@@ -7,6 +7,7 @@ using TaleWorlds.Core;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Library;
+using SkillMastery.Helpers;
 
 namespace SkillMastery.Patches
 {
@@ -15,6 +16,9 @@ namespace SkillMastery.Patches
     {
         static bool Prefix(PerkVM __instance)
         {
+            var contextHero = SkillMasteryHelper.GetContextHero(__instance);
+            if (contextHero != Hero.MainHero) return true;
+
             var perk = __instance.Perk;
             var hero = Hero.MainHero;
             if (hero == null || perk == null || perk.AlternativePerk == null)
