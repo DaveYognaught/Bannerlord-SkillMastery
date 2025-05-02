@@ -16,6 +16,10 @@ public static class Patch_PerkVM_ExecuteStartSelection
         if (hero == null || perk == null || perk.AlternativePerk == null)
             return true; // run original
 
+        // 💡 Don't override if this perk is already selected (active)
+        if (hero.GetPerkValue(perk))
+            return true;
+
         int idx = (int)(perk.RequiredSkillValue / 25f);
         int cap = perk.Skill == DefaultSkills.Trade ? 300
                  : perk.Skill == DefaultSkills.TwoHanded ? 250
@@ -31,10 +35,10 @@ public static class Patch_PerkVM_ExecuteStartSelection
             {
                 onStart(__instance);
                 InformationManager.DisplayMessage(new InformationMessage($"[ExecuteStartSelection] {perk.Name} trying to click..."));
-                return false; // skip original logic
+                return false; // skip vanilla logic
             }
         }
 
-        return true; // fallback to original
+        return true;
     }
 }
