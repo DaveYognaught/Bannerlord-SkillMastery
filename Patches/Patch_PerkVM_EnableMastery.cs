@@ -14,13 +14,17 @@ namespace SkillMastery.Patches
     {
         static void Postfix(PerkVM __instance)
         {
-            var contextHero = SkillMasteryHelper.GetContextHero(__instance);
-            if (contextHero != Hero.MainHero) return;
+            if (!SkillMasterySettings.Instance.AllowAICompanions)
+            {
+                //No AI allowed - Do a Main Hero check. Robots.txt their ass.
+                var contextHero = SkillMasteryHelper.GetContextHero(__instance);
+                if (contextHero != Hero.MainHero) return;
+            }
 
             var perk = __instance.Perk;
-            var hero = Hero.MainHero;
+            var hero = SkillMasteryHelper.GetContextHero(__instance);
             if (hero == null || perk == null || perk.AlternativePerk == null) return;
-            if (!hero.GetPerkValue(perk.AlternativePerk)) return;
+            if (!hero.GetPerkValue(perk) && !hero.GetPerkValue(perk.AlternativePerk)) return; // Skip only if neither perk in the pair is selected yet
 
             int idx = (int)(perk.RequiredSkillValue / 25f);
             int cap = perk.Skill == DefaultSkills.Trade ? 300

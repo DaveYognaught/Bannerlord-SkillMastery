@@ -16,11 +16,15 @@ namespace SkillMastery.Patches
     {
         static bool Prefix(PerkVM __instance)
         {
-            var contextHero = SkillMasteryHelper.GetContextHero(__instance);
-            if (contextHero != Hero.MainHero) return true;
+            if (!SkillMasterySettings.Instance.AllowAICompanions)
+            {
+                //No AI allowed - Do a Main Hero check. Robots.txt their ass.
+                var contextHero = SkillMasteryHelper.GetContextHero(__instance);
+                if (contextHero != Hero.MainHero) return true;
+            }
 
             var perk = __instance.Perk;
-            var hero = Hero.MainHero;
+            var hero = SkillMasteryHelper.GetContextHero(__instance);
             if (hero == null || perk == null || perk.AlternativePerk == null)
                 return true;  // let vanilla handle it
 

@@ -27,14 +27,14 @@ namespace SkillMastery.Helpers
             var devField = skillVMType.GetField("_developerVM", BindingFlags.NonPublic | BindingFlags.Instance);
             if (devField == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage("Could not find _developerVM field"));
+                //InformationManager.DisplayMessage(new InformationMessage("Could not find _developerVM field"));
                 return null;
             }
 
             var devVM = devField.GetValue(skillVM);
             if (devVM == null)
             {
-                InformationManager.DisplayMessage(new InformationMessage("_developerVM was null"));
+                //InformationManager.DisplayMessage(new InformationMessage("_developerVM was null"));
                 return null;
             }
 
@@ -42,7 +42,7 @@ namespace SkillMastery.Helpers
             var heroProp = devVM.GetType().GetProperty("Hero", BindingFlags.Public | BindingFlags.Instance);
             var hero = heroProp?.GetValue(devVM) as Hero;
 
-            InformationManager.DisplayMessage(new InformationMessage($"Context Hero: {hero?.Name}"));
+            //InformationManager.DisplayMessage(new InformationMessage($"Context Hero: {hero?.Name}"));
 
             return hero;
         }

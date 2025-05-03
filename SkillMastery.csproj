@@ -69,6 +69,7 @@
     <Compile Include="Helpers\Helpers.cs" />
     <Compile Include="Patches\Patch_PerkVM_ExecuteStartSelection.cs" />
     <Compile Include="Patches\Patch_PerkVM_EnableMastery.cs" />
+    <Compile Include="Patches\Patch_SkillVM_RefreshNumOfUnopenedPerks.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SubModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
