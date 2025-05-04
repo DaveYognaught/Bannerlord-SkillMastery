@@ -81,16 +81,21 @@ namespace SkillMastery.Patches
 
                 var sf = typeof(PerkVM).GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
                 var pf = typeof(PerkVM).GetField("_perkState", BindingFlags.NonPublic | BindingFlags.Instance);
+                var current = (PerkVM.PerkStates)sf.GetValue(__instance);
                 var dev = hero.HeroDeveloper;
 
-                AccessTools.Method(typeof(HeroDeveloper), "AddPerk")
-                           .Invoke(dev, new object[] { perk });
+                if (current == PerkVM.PerkStates.EarnedAndNotActive
+                 || current == PerkVM.PerkStates.NotEarned
+                 || current == PerkVM.PerkStates.EarnedPreviousPerkNotSelected)
+                {
+                    AccessTools.Method(typeof(HeroDeveloper), "AddPerk")
+                        .Invoke(dev, new object[] { perk });
 
-                // Optionally update the UI state immediately
-                sf.SetValue(__instance, PerkVM.PerkStates.EarnedAndActive);
-                pf.SetValue(__instance, (int)PerkVM.PerkStates.EarnedAndActive);
+                    sf.SetValue(__instance, PerkVM.PerkStates.EarnedAndActive);
+                    pf.SetValue(__instance, (int)PerkVM.PerkStates.EarnedAndActive);
+                }
 
-                return; // We've done our job yipee
+                return; // We've done our job. No more yipee. Careless bug.
             }
             else
             {
