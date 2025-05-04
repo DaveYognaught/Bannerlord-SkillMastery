@@ -17,8 +17,8 @@ namespace SkillMastery.Patches
             if (!SkillMasterySettings.Instance.AllowAICompanions)
             {
                 //No AI allowed - Do a Main Hero check. Robots.txt their ass.
-                var contextHero = SkillMasteryHelper.GetContextHero(__instance);
-                if (contextHero != Hero.MainHero) return;
+                var init_contextHero = SkillMasteryHelper.GetContextHero(__instance);
+                if (init_contextHero != Hero.MainHero) return;
             }
 
             var perk = __instance.Perk;
@@ -39,14 +39,21 @@ namespace SkillMastery.Patches
                          : perk.Skill == DefaultSkills.TwoHanded ? 9
                          : 10;
 
+            var contextHero = SkillMasteryHelper.GetContextHero(__instance);
+            bool isPlayer = contextHero == Hero.MainHero;
+
             // Starting Level Offset — reduces the cap (only if negative)
-            int startOffset = SkillMasterySettings.Instance.MasteryStartingLevelOffset;
+            int startOffset = isPlayer
+                ? SkillMasterySettings.Instance.PlayerMasteryStartingLevelOffset
+                : SkillMasterySettings.Instance.CompanionMasteryStartingLevelOffset;
             int cap = baseCap + startOffset;
 
             // Ensure Perks never exceeds 330
             int maxOffsetPerPerk = (330 - cap) / PerkCount;
 
-            int safeOffset = SkillMasterySettings.Instance.MasteryLevelOffset;
+            int safeOffset = isPlayer
+                ? SkillMasterySettings.Instance.PlayerMasteryLevelOffset
+                : SkillMasterySettings.Instance.CompanionMasteryLevelOffset;
             if (safeOffset > maxOffsetPerPerk)
                 safeOffset = maxOffsetPerPerk;
 
