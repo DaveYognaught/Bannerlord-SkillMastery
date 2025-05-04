@@ -62,17 +62,44 @@ namespace SkillMastery.Patches
                 return;
             }
 
-            // override vanilla “locked due to sibling” states to “earned-but-not-selected”
-            var sf = typeof(PerkVM).GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
-            var pf = typeof(PerkVM).GetField("_perkState", BindingFlags.NonPublic | BindingFlags.Instance);
-            var current = (PerkVM.PerkStates)sf.GetValue(__instance);
+            // The Player / Companion qualifies for the Mastery Perk. Now, determine whether it's auto-assigned or clickable. 
+            bool isMainHero = hero == Hero.MainHero;
+            bool autoAssign = (isMainHero && SkillMasterySettings.Instance.AutoAssignPlayer) ||
+                              (!isMainHero && SkillMasterySettings.Instance.AutoAssignCompanions);
 
-            if (current == PerkVM.PerkStates.EarnedAndNotActive
-             || current == PerkVM.PerkStates.NotEarned
-             || current == PerkVM.PerkStates.EarnedPreviousPerkNotSelected)
+            if (autoAssign)
             {
-                sf.SetValue(__instance, PerkVM.PerkStates.EarnedButNotSelected);
-                pf.SetValue(__instance, (int)PerkVM.PerkStates.EarnedButNotSelected);
+                // Auto-Assign is true. Assign the perk immediately. Won't show Master Messages. That's fine though I think. Would spam.
+                // If it didn't spam per perk, I'd like to show a message of "Upgraded Companions" or "Upgraded Hero" but not sure how.
+
+                var sf = typeof(PerkVM).GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
+                var pf = typeof(PerkVM).GetField("_perkState", BindingFlags.NonPublic | BindingFlags.Instance);
+                var dev = hero.HeroDeveloper;
+
+                AccessTools.Method(typeof(HeroDeveloper), "AddPerk")
+                           .Invoke(dev, new object[] { perk });
+
+                // Optionally update the UI state immediately
+                sf.SetValue(__instance, PerkVM.PerkStates.EarnedAndActive);
+                pf.SetValue(__instance, (int)PerkVM.PerkStates.EarnedAndActive);
+
+                return; // We've done our job yipee
+            }
+            else
+            {
+                // Auto-Assign is false. Show the perk as "earned-but-not-selected" in the UI instead to prompt clicking.
+
+                var sf = typeof(PerkVM).GetField("_currentState", BindingFlags.NonPublic | BindingFlags.Instance);
+                var pf = typeof(PerkVM).GetField("_perkState", BindingFlags.NonPublic | BindingFlags.Instance);
+                var current = (PerkVM.PerkStates)sf.GetValue(__instance);
+
+                if (current == PerkVM.PerkStates.EarnedAndNotActive
+                 || current == PerkVM.PerkStates.NotEarned
+                 || current == PerkVM.PerkStates.EarnedPreviousPerkNotSelected)
+                {
+                    sf.SetValue(__instance, PerkVM.PerkStates.EarnedButNotSelected);
+                    pf.SetValue(__instance, (int)PerkVM.PerkStates.EarnedButNotSelected);
+                }
             }
         }
     }
