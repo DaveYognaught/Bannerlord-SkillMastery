@@ -26,26 +26,35 @@ namespace SkillMastery.Patches
             if (hero == null || perk == null || perk.AlternativePerk == null) return;
             if (!hero.GetPerkValue(perk) && !hero.GetPerkValue(perk.AlternativePerk)) return; // Skip only if neither perk in the pair is selected yet
 
+
+            //!! CALCULATE PERK COST HERE !!//
+            //!! CALCULATE PERK COST HERE !!//
             int idx = (int)(perk.RequiredSkillValue / 25f);
-            int cap = perk.Skill == DefaultSkills.Trade ? 300
+
+            int baseCap = perk.Skill == DefaultSkills.Trade ? 300
                          : perk.Skill == DefaultSkills.TwoHanded ? 250
                          : 275;
-            int required = 0;
-            if (cap == 300)
-            {
-                if (SkillMasterySettings.Instance.MasteryLevelOffset > 2)
-                {
-                    required = cap + (idx * 2);
-                }
-                else
-                {
-                    required = cap + (idx * SkillMasterySettings.Instance.MasteryLevelOffset);
-                }
-            }
-            else
-            {
-                required = cap + (idx * SkillMasterySettings.Instance.MasteryLevelOffset);
-            }
+
+            int PerkCount = perk.Skill == DefaultSkills.Trade ? 11
+                         : perk.Skill == DefaultSkills.TwoHanded ? 9
+                         : 10;
+
+            // Starting Level Offset — reduces the cap (only if negative)
+            int startOffset = SkillMasterySettings.Instance.MasteryStartingLevelOffset;
+            int cap = baseCap + startOffset;
+
+            // Ensure Perks never exceeds 330
+            int maxOffsetPerPerk = (330 - cap) / PerkCount;
+
+            int safeOffset = SkillMasterySettings.Instance.MasteryLevelOffset;
+            if (safeOffset > maxOffsetPerPerk)
+                safeOffset = maxOffsetPerPerk;
+
+            int required = cap + (idx * safeOffset);
+            //!! END PERK COST CALCULATION !!//
+            //!! END PERK COST CALCULATION !!//
+
+
             int playerSkill = hero.GetSkillValue(perk.Skill);
 
             if (playerSkill < required)
