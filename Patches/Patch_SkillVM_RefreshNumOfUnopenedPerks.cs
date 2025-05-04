@@ -15,12 +15,14 @@ namespace SkillMastery.Patches
             int num = 0;
             var perks = __instance.Perks;
 
+            HashSet<int> countedCosts = new HashSet<int>();
             foreach (PerkVM perk in perks)
             {
-                if (perk.CurrentState == PerkVM.PerkStates.EarnedButNotSelected
-                 || perk.CurrentState == PerkVM.PerkStates.EarnedPreviousPerkNotSelected)
+                if ((perk.CurrentState == PerkVM.PerkStates.EarnedButNotSelected
+                  || perk.CurrentState == PerkVM.PerkStates.EarnedPreviousPerkNotSelected)
+                  && !countedCosts.Contains((int)perk.Perk.RequiredSkillValue))
                 {
-                    // Count all unopened perks regardless of their alternative type (0/1/2)
+                    countedCosts.Add((int)perk.Perk.RequiredSkillValue);
                     num++;
                 }
             }
