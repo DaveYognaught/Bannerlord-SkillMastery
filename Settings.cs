@@ -20,13 +20,18 @@ namespace SkillMastery
         public bool ShowMessages { get; set; } = true;
 
 
+        [SettingPropertyBool("Disable Perk Safeguards", RequireRestart = false, HintText = "Disable the Perk rounding safeguards that ensure all perks unlock before 330.\nOnly enable this if you are using a mod that increase that limit! (Default: False)",
+            Order = 0)]
+        [SettingPropertyGroup("Global Settings", GroupOrder = 1)]
+        public bool DisableSafeguards { get; set; } = false;
+
 
         // !! Player Specific Settings !! //
         // !! Player Specific Settings !! //
         [SettingPropertyInteger(
             "Mastery Perk Cost Offset",
             1,
-            20,
+            50,
             RequireRestart = false, 
             HintText = "Determines the additional level(s) required to unlock Player Mastery Perks.\nNOTE: By default, it's not actually 20. It'll either be 8/5/2 for 250/275/300 Skills respectively.\nThis is due to Safeguard Logic that'll ensure perks are always affordable and below 330! (Default: 20)",
             Order = 1
@@ -59,7 +64,7 @@ namespace SkillMastery
         [SettingPropertyInteger(
             "Mastery Perk Cost Offset",
             1,
-            20,
+            50,
             RequireRestart = false, 
             HintText = "Determines the additional level(s) required to unlock Companion Mastery Perks.\nNOTE: By default, it's not actually 20. It'll either be 8/5/2 for 250/275/300 Skills respectively.\nThis is due to Safeguard Logic that'll ensure perks are always affordable and below 330! (Default: 20)",
             Order = 1

@@ -106,8 +106,9 @@ namespace SkillMastery.Patches
                             : SkillMasterySettings.Instance.CompanionMasteryStartingLevelOffset;
                         int cap = baseCap + startOffset;
 
-                        // Ensure Perks never exceeds 330
-                        int maxOffsetPerPerk = (330 - cap) / PerkCount;
+                        // Ensure Perks never exceeds 330 UNLESS DisableSafeguards is ON
+                        bool DisableSafeguards = SkillMasterySettings.Instance.DisableSafeguards;
+                        int maxOffsetPerPerk = DisableSafeguards ? int.MaxValue : (330 - cap) / PerkCount;
 
                         int safeOffset = isPlayer
                             ? SkillMasterySettings.Instance.PlayerMasteryLevelOffset
