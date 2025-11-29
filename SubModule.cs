@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System;
 using System.Linq;
 using TaleWorlds.Core;
 using TaleWorlds.Library;
@@ -14,7 +13,7 @@ namespace SkillMastery
         protected override void OnSubModuleLoad()
         {
             base.OnSubModuleLoad();
-            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded."));
+            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded (v1.3.7.1)"));
 
             _harmony = new Harmony("com.skillmastery.perkunlocker");
             _harmony.PatchAll();
@@ -38,7 +37,7 @@ namespace SkillMastery
             base.OnGameStart(game, gameStarterObject);
 
             // Only show this once per game session
-            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded."));
+            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded (v1.3.7.1)"));
         }
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
@@ -46,7 +45,7 @@ namespace SkillMastery
             base.OnBeforeInitialModuleScreenSetAsRoot();
 
             // Triggers once at game startup, when the main menu appears
-            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded."));
+            InformationManager.DisplayMessage(new InformationMessage("SkillMastery Loaded (v1.3.7.1)"));
         }
     }
 }

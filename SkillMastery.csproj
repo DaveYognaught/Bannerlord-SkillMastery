@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=2.3.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Lib.Harmony.2.3.6\lib\net472\0Harmony.dll</HintPath>
+    <Reference Include="0Harmony, Version=2.4.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Lib.Harmony.2.4.2\lib\net472\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -82,14 +82,17 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <PackageReference Include="Bannerlord.ButterLib">
-      <Version>2.10.0</Version>
+      <Version>2.10.2</Version>
     </PackageReference>
-    <PackageReference Include="Bannerlord.MCM" Version="5.10.2" IncludeAssets="compile" />
+    <PackageReference Include="Bannerlord.MCM" Version="5.11.3" IncludeAssets="compile" />
     <PackageReference Include="Bannerlord.UIExtenderEx">
-      <Version>2.13.0</Version>
+      <Version>2.13.2</Version>
     </PackageReference>
     <PackageReference Include="Lib.Harmony">
-      <Version>2.4.1</Version>
+      <Version>2.4.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
 </Project>
