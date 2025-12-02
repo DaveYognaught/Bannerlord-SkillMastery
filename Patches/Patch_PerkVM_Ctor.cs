@@ -1,17 +1,13 @@
 ﻿using HarmonyLib;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterDeveloper;
 using TaleWorlds.Core;
-using TaleWorlds.Library;
 using System.Collections.Generic;
 using SkillMastery.Helpers;
 using System.Reflection;
-using System.Linq;
 using static TaleWorlds.CampaignSystem.ViewModelCollection.CharacterDeveloper.PerkVM;
-using static TaleWorlds.Core.ViewModelCollection.Information.TooltipProperty;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.Core.ViewModelCollection.Information;
 using System;
-using SkillMastery;
 using TaleWorlds.CampaignSystem.ViewModelCollection;
 using TaleWorlds.CampaignSystem;
 

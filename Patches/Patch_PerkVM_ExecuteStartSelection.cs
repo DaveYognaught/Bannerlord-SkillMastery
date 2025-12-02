@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using SkillMastery;
 using System;
 using TaleWorlds.CampaignSystem.ViewModelCollection.CharacterDeveloper;
 using TaleWorlds.CampaignSystem.CharacterDevelopment;

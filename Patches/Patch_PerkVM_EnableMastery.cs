@@ -4,7 +4,6 @@ using TaleWorlds.CampaignSystem.CharacterDevelopment;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using System.Reflection;
-using TaleWorlds.Library;
 using SkillMastery.Helpers;
 
 namespace SkillMastery.Patches
